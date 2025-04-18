@@ -14,16 +14,34 @@ public class PlayerRPG : MonoBehaviour
 
     public Image attackReadyImage;
 
-    // Start is called before the first frame update
-    void Start()
+    //added variables:
+    private bool isRangedAtkReady = true;
+    public Image rangedAtkReadyImage;
+
+    public GameObject bulletPrefab;
+    public float bulletForce;
+    public Transform bulletSpawnPosition;
+
+    public AudioSource sfxSrc;
+    public AudioClip pAtkSfx;
+
+    Coroutine atkCd;
+    
+
+    protected virtual void Start()
     {
         
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
-        if(isAttackReady == false)
+        /*if(healthSlider.value != life)
+        {
+            healthSlider.value = life;
+        }*/
+
+        if(isAttackReady == false) //MeleeAttack cooldown
         {
             timer += Time.deltaTime;
 
@@ -36,11 +54,14 @@ public class PlayerRPG : MonoBehaviour
         }
         
 
-        if(Input.GetMouseButtonDown(0))
+        if(Input.GetMouseButtonDown(0)) //MeleeAttack
         {
             if(isAttackReady == true)
             {
+                sfxSrc.clip = pAtkSfx;
+
                 RaycastHit hit;
+                sfxSrc.Play();
 
                 if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit, 3f))
                 {
@@ -53,16 +74,28 @@ public class PlayerRPG : MonoBehaviour
                 }
             }
         }
+
+        if(Input.GetKeyDown(KeyCode.F)) //RangedAtk
+        {
+            if (isRangedAtkReady == true)
+            {
+                GameObject bullet = Instantiate(bulletPrefab, bulletSpawnPosition);
+                bullet.GetComponent<Rigidbody>().AddForce(bullet.transform.forward * bulletForce);
+                Destroy(bullet, 3f);
+            }
+        }
     }
 
-    public void Attack(BaseEnemy enemy)
+    //IEnumerator AttackCD()
+    
+    public void Attack(BaseEnemy enemy) //MeleeAttack Recieved by BaseEnemy?
     {
         enemy.TakeDamage(attackDamage);
         isAttackReady = false;
         attackReadyImage.gameObject.SetActive(isAttackReady);
     }
 
-    public void TakeDamage(float damage)
+    public void TakeDamage(float damage) //Player Death
     {
         health -= damage;
 

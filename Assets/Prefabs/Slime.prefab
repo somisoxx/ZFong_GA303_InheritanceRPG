@@ -123,4 +123,8 @@ MonoBehaviour:
   health: 20
   speed: 3
   attackDamage: 1
+  attackRange: 3
   attackInterval: 2
+  slimeSfxSrc: {fileID: 0}
+  slAtkSfx: {fileID: 0}
+  slDmgSfx: {fileID: 0}

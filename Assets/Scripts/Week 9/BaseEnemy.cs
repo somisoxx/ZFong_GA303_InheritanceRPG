@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class BaseEnemy : MonoBehaviour
@@ -9,6 +10,8 @@ public class BaseEnemy : MonoBehaviour
     public float attackDamage = 0f;
 
     private float timer = 0f;
+
+    public float attackRange = 3f;
 
     [SerializeField] protected float attackInterval = 1f;
 
@@ -23,12 +26,15 @@ public class BaseEnemy : MonoBehaviour
     // Update is called once per frame
     protected virtual void Update()
     {
-        timer += Time.deltaTime;
-
-        if(timer >= attackInterval)
+        
+        if (Vector3.Distance(this.transform.position, player.transform.position) < attackRange) //+ enemies within set range will attack
         {
-            Attack();
-            timer = 0f;
+            timer += Time.deltaTime;
+            if (timer >= attackInterval)
+            {
+                Attack();
+                timer = 0f;
+            }
         }
     }
 
@@ -49,6 +55,15 @@ public class BaseEnemy : MonoBehaviour
         if(health <= 0f)
         {
             Destroy(this.gameObject);
+        }
+    }
+
+    void OnCollisionEnter(Collision other)
+    {
+        if(other.gameObject.tag == "Bullet")
+        {
+            //TakeDamage
+            Destroy(other.gameObject);
         }
     }
 }
