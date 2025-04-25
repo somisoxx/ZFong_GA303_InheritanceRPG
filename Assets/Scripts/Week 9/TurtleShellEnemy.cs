@@ -28,6 +28,9 @@ public class TurtleShellEnemy : SlimeEnemy
 
     void OnCollsionEnter(Collision other)
     {
+        if ( other.gameObject.tag == "Bullet")
+        {
 
+        }
     }
 }
